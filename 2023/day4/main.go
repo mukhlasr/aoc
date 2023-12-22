@@ -30,7 +30,6 @@ func main() {
 
 func ParseCard(line string) Card {
 	line = removeDuplicatedSpace(line)
-	log.Println(line)
 	var c Card
 	split := strings.Split(line, ":")
 	numsStr := split[1]
@@ -141,20 +140,27 @@ func (c Card) GetDuplicateCardsIDs() []int {
 }
 
 func CalculatedTotalCardsWithDuplicates(cards []Card) int {
-	nCardInstances := map[int][]Card{}
+	mapIDToCard := map[int]Card{}
+	for _, c := range cards {
+		mapIDToCard[c.ID] = c
+	}
+
+	nDuplicates := 0
 
 	for _, c := range cards {
-		nCardInstances[c.ID] = append(nCardInstances[c.ID], c)
-		ids := c.GetDuplicateCardsIDs()
-		for _, id := range ids {
-			nCardInstances[id] = append(nCardInstances[id], cards[id-1])
+		var dupCardIDs []int
+		// append duplicates
+		dupCardIDs = append(dupCardIDs, c.GetDuplicateCardsIDs()...)
+
+		for i := 0; i < len(dupCardIDs); i++ { // find duplicates of duplicates
+			d := dupCardIDs[i]
+			c := mapIDToCard[d]
+			dupCardIDs = append(dupCardIDs, c.GetDuplicateCardsIDs()...)
 		}
 
+		nDuplicates += len(dupCardIDs)
 	}
 
-	for k, v := range nCardInstances {
-		log.Println(k, len(v))
-	}
-
-	return 0
+	// number of cards + number of duplicates = total cards
+	return nDuplicates + len(cards)
 }
