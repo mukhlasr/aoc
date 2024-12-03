@@ -1,25 +1,3 @@
-f = File.open("input.txt")
-
-report = f.each_line.map do |line|
-  line.split.map(&:to_i)
-end
-
-safes = []
-unsafes = []
-
-report.each do |levels|
-  if safe? levels
-    next safes << levels
-  end
-
-  unsafes << levels
-end
-
-part2 = unsafes.select {|level| safe2? level }.length + safes.length
-
-puts "part1: #{safes.length}"
-puts "part2: #{part2}"
-
 def safe?(levels)
   level_diffs = levels.each_cons(2).map { |a,b| b - a }
   head = level_diffs[0]
@@ -49,3 +27,24 @@ def safe2?(level)
   new_levels.any? { |l| safe?(l) }
 end
 
+f = File.open("input.txt")
+
+report = f.each_line.map do |line|
+  line.split.map(&:to_i)
+end
+
+safes = []
+unsafes = []
+
+report.each do |levels|
+  if safe? levels
+    next safes << levels
+  end
+
+  unsafes << levels
+end
+
+part2 = unsafes.select {|level| safe2? level }.length + safes.length
+
+puts "part1: #{safes.length}"
+puts "part2: #{part2}"
