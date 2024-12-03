@@ -7,6 +7,7 @@ def parse_mul(section)
 
   return if section.length < 5
   return unless section[0] == "("
+
   section.each_char do |char|
     case char
     when '('
@@ -14,12 +15,12 @@ def parse_mul(section)
     when "0".."9"
       queue << char
     when ","
-      while queue != []
+      while !queue.empty?
         a << queue.shift
       end
     when ")"
       stack.pop
-      while queue != []
+      while !queue.empty?
         b << queue.shift
       end
     else
